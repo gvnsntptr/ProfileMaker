@@ -1,6 +1,6 @@
-const Manager = require('./lib/Manager');
-const Engineer = require('./lib/Engineer');
-const Intern = require('./lib/Intern');
+const LeadGuitarist = require('./lib/LeadGuitarist');
+const Drummer = require('./lib/Drummer');
+const Bassist = require('./lib/Bassist');
 const inquirer = require('inquirer');
 const path = require('path');
 const fs = require('fs');
@@ -10,23 +10,23 @@ const distPath = path.join(DIST_DIR, 'team.html');
 
 const render = require('./src/page-template.js');
 
-const teamMembers = [];
-const idArray = [];
+const bandMates = [];
+const idBank = [];
 
 // Inform user of usage
 console.log(
-  '\nWelcome to the team generator!\nUse `npm run reset` to reset the dist/ folder\n'
+  '\nWelcome to the band generator!\nUse `npm run reset` to reset the dist/ folder\n'
 );
 
 function appMenu() {
-  function createManager() {
-    console.log('Please build your team 👥');
+  function createLeadGuitarist() {
+    console.log('Please build your band 👥');
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'managerName',
-          message: "What is the team manager's name?",
+          name: 'LeadGuitaristName',
+          message: "What is the lead guitarist's name?",
           validate: (answer) => {
             if (answer !== '') {
               return true;
@@ -36,8 +36,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'managerId',
-          message: "What is the team manager's id?",
+          name: 'gtrId',
+          message: "What is the lead guitarist's id?",
           validate: (answer) => {
             const pass = answer.match(/^[1-9]\d*$/);
             if (pass) {
@@ -48,8 +48,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'managerEmail',
-          message: "What is the team manager's email?",
+          name: 'gtrEmail',
+          message: "What is the lead guitarist's email?",
           validate: (answer) => {
             const pass = answer.match(/\S+@\S+\.\S+/);
             if (pass) {
@@ -60,8 +60,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'managerOfficeNumber',
-          message: "What is the team manager's office number?",
+          name: 'guitaristPhoneNumber',
+          message: "What is the lead guitarist's phone number?",
           validate: (answer) => {
             const pass = answer.match(/^[1-9]\d*$/);
             if (pass) {
@@ -72,53 +72,53 @@ function appMenu() {
         },
       ])
       .then((answers) => {
-        const manager = new Manager(
-          answers.managerName,
-          answers.managerId,
-          answers.managerEmail,
-          answers.managerOfficeNumber
+        const guitarist = new LeadGuitarist(
+          answers.LeadGuitaristName,
+          answers.gtrId,
+          answers.gtrEmail,
+          answers.guitaristPhoneNumber
         );
-        teamMembers.push(manager);
-        idArray.push(answers.managerId);
-        createTeam();
+        bandMates.push(guitarist);
+        idBank.push(answers.gtrId);
+        createLeadGuitarist();
       });
   }
 
-  function createTeam() {
+  function createBand() {
     inquirer
       .prompt([
         {
           type: 'list',
           name: 'memberChoice',
-          message: 'Which type of team member would you like to add?',
+          message: 'Which type of band member would you like to add?',
           choices: [
-            'Engineer',
-            'Intern',
-            "I don't want to add any more team members",
+            'Drummer',
+            'Bassist',
+            "I don't want to add any more band members",
           ],
         },
       ])
       .then((userChoice) => {
         switch (userChoice.memberChoice) {
-          case 'Engineer':
-            addEngineer();
+          case 'Drummer':
+            addDrummer();
             break;
-          case 'Intern':
-            addIntern();
+          case 'Bassist':
+            addBassist();
             break;
           default:
-            buildTeam();
+            buildYourBand();
         }
       });
   }
 
-  function addEngineer() {
+  function addDrummer() {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'engineerName',
-          message: "What is your engineer's name?",
+          name: 'drmName',
+          message: "What is your drummer's name?",
           validate: (answer) => {
             if (answer !== '') {
               return true;
@@ -128,12 +128,12 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'engineerId',
-          message: "What is your engineer's id?",
+          name: 'drmId',
+          message: "What is your drummer's id?",
           validate: (answer) => {
             const pass = answer.match(/^[1-9]\d*$/);
             if (pass) {
-              if (idArray.includes(answer)) {
+              if (idBank.includes(answer)) {
                 return 'This ID is already taken. Please enter a different number.';
               } else {
                 return true;
@@ -144,8 +144,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'engineerEmail',
-          message: "What is your engineer's email?",
+          name: 'drmEmail',
+          message: "What is your drummer's email?",
           validate: (answer) => {
             const pass = answer.match(/\S+@\S+\.\S+/);
             if (pass) {
@@ -156,8 +156,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'engineerGithub',
-          message: "What is your engineer's GitHub username?",
+          name: 'drmSticks',
+          message: "What drum sticks does your drummer use?",
           validate: (answer) => {
             if (answer !== '') {
               return true;
@@ -167,25 +167,25 @@ function appMenu() {
         },
       ])
       .then((answers) => {
-        const engineer = new Engineer(
-          answers.engineerName,
-          answers.engineerId,
-          answers.engineerEmail,
-          answers.engineerGithub
+        const drummer = new Drummer(
+          answers.drmName,
+          answers.drmId,
+          answers.drmEmail,
+          answers.drmSticks
         );
-        teamMembers.push(engineer);
-        idArray.push(answers.engineerId);
-        createTeam();
+        bandMates.push(drummer);
+        idBank.push(answers.drmId);
+        createBand();
       });
   }
 
-  function addIntern() {
+  function addBassist() {
     inquirer
       .prompt([
         {
           type: 'input',
-          name: 'internName',
-          message: "What is your intern's name?",
+          name: 'bgtrName',
+          message: "What is your bass guitarist's name?",
           validate: (answer) => {
             if (answer !== '') {
               return true;
@@ -195,12 +195,12 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'internId',
-          message: "What is your intern's id?",
+          name: 'bgtrId',
+          message: "What is your bass guitarist's id?",
           validate: (answer) => {
             const pass = answer.match(/^[1-9]\d*$/);
             if (pass) {
-              if (idArray.includes(answer)) {
+              if (idBank.includes(answer)) {
                 return 'This ID is already taken. Please enter a different number.';
               } else {
                 return true;
@@ -211,8 +211,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'internEmail',
-          message: "What is your intern's email?",
+          name: 'bgtrEmail',
+          message: "What is your bass Guitarist's email?",
           validate: (answer) => {
             const pass = answer.match(/\S+@\S+\.\S+/);
             if (pass) {
@@ -223,8 +223,8 @@ function appMenu() {
         },
         {
           type: 'input',
-          name: 'internSchool',
-          message: "What is your intern's school?",
+          name: 'bgtrBass',
+          message: "What model of bass does your bass guitarist play?",
           validate: (answer) => {
             if (answer !== '') {
               return true;
@@ -234,27 +234,27 @@ function appMenu() {
         },
       ])
       .then((answers) => {
-        const intern = new Intern(
-          answers.internName,
-          answers.internId,
-          answers.internEmail,
-          answers.internSchool
+        const bassist = new Bassist(
+          answers.bgtrName,
+          answers.bgtrId,
+          answers.bgtrEmail,
+          answers.bgtrBass
         );
-        teamMembers.push(intern);
-        idArray.push(answers.internId);
-        createTeam();
+        bandMates.push(bassist);
+        idBank.push(answers.bgtrId);
+        createBand();
       });
   }
 
-  function buildTeam() {
+  function buildYourBand() {
     // Create the output directory if the dist path doesn't exist
     if (!fs.existsSync(DIST_DIR)) {
       fs.mkdirSync(DIST_DIR);
     }
-    fs.writeFileSync(distPath, render(teamMembers), 'utf-8');
+    fs.writeFileSync(distPath, render(bandMates), 'utf-8');
   }
 
-  createManager();
+  createLeadGuitarist();
 }
 
 appMenu();
